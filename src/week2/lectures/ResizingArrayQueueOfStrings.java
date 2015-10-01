@@ -14,30 +14,38 @@ public class ResizingArrayQueueOfStrings {
 	}
 	
 	public void enqueue(String item) {
-		if (tail == q.length) rearranging();
-		q[tail++] = item;
+		if (tail - head == q.length) resizing(2 * q.length);
+		q[tail++ % q.length] = item;
 	}
 	
 	public String dequeue() {
-		String item = q[head++];
-		q[head-1] = null; // avoid loitering 
+		String item = q[head++ % q.length];
+		q[head % q.length - 1] = null; // avoid loitering
+		if (tail - head < q.length / 4) resizing(q.length / 2);
 		return item;
-	}
-	
-	private void rearranging() {
-		if (head == 0) resizing(2 * q.length);
-		tail -= head;
-		for (int i = 0; i < tail; i++)
-			q[i] = q[head+i];
-		head = 0;
-		if (tail < q.length / 4) resizing(q.length / 2);
 	}
 	
 	private void resizing(int capacity) {
 		String[] copy = new String[capacity];
 		for (int i = 0; i < capacity / 2; i++)
-			copy[i] = q[i];
-		q = copy;
+			copy[i] = q[(i + head % q.length) % q.length];
+		q = copy; head %= q.length; tail = capacity / 2;
+	}
+	
+	public void printQ() {
+		for (int i = 0; i < q.length; i++) {
+			System.out.println(q[i]);
+		}
+	}
+	
+	public static void main(String[] args) {
+		ResizingArrayQueueOfStrings q = new ResizingArrayQueueOfStrings();
+    	q.enqueue("a");
+    	q.enqueue("b");
+    	q.enqueue("c");
+    	q.enqueue("d");
+    	q.enqueue("e");
+    	q.printQ();
 	}
 	
 }
