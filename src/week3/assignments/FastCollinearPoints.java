@@ -18,27 +18,27 @@ public class FastCollinearPoints {
 	public FastCollinearPoints(Point[] points) {
 		Point[] pts = Arrays.copyOf(points, points.length);
 		checkPoints(pts);
-		for (Point p : pts) {
+		for (Point p : points) {
 			Arrays.sort(pts, p.slopeOrder());
 			double slope;
 			double lastSlope = Double.NEGATIVE_INFINITY;
 			List<Point> collinearPoints = new ArrayList<>();
 			for (int i = 1; i < pts.length; i++) {
-				 slope = p.slopeTo(pts[i]);
-				 if (slope != lastSlope) {
-					 if (collinearPoints.size() >= 3) {
-						 collinearPoints.add(p);
-						 addNewLineSegment(collinearPoints, lastSlope);
-					 }
-					 collinearPoints.clear();
-				 }
-				 collinearPoints.add(pts[i]);
-				 lastSlope = slope;
+				slope = p.slopeTo(pts[i]);
+				if (slope != lastSlope) {
+					if (collinearPoints.size() >= 3) {
+						collinearPoints.add(p);
+						addNewLineSegment(collinearPoints, lastSlope);
+					}
+					collinearPoints.clear();
+				}
+				collinearPoints.add(pts[i]);
+				lastSlope = slope;
 			}
 			if (collinearPoints.size() >= 3) {
-				 collinearPoints.add(p);
-				 addNewLineSegment(collinearPoints, lastSlope);
-			 }
+				collinearPoints.add(p);
+				addNewLineSegment(collinearPoints, lastSlope);
+			}
 		}
 	}
 	
@@ -47,7 +47,6 @@ public class FastCollinearPoints {
 		Collections.sort(collinearPoints);
 		Point firstPoint = collinearPoints.get(0);
 		Point lastPointCandidate = collinearPoints.get(collinearPoints.size()-1);
-		
 		if (lastPointsList == null) {
 			lastPointsList = new ArrayList<>();
 			lastPointsList.add(lastPointCandidate);
@@ -55,7 +54,7 @@ public class FastCollinearPoints {
 			segmentsList.add(new LineSegment(firstPoint, lastPointCandidate));
 		} else {
 			for (Point previousLastPoint : lastPointsList)
-				if (lastPointCandidate == previousLastPoint)
+				if (lastPointCandidate.compareTo(previousLastPoint) == 0)
 					return;
 			lastPointsList.add(lastPointCandidate);
 			segmentsList.add(new LineSegment(firstPoint, lastPointCandidate));
@@ -64,7 +63,7 @@ public class FastCollinearPoints {
  	
 	// the number of line segments
 	public int numberOfSegments() {
-		return segments().length;
+		return segmentsList.size();
 	}
 	
 	// the line segments
