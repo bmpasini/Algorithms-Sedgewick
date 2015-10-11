@@ -3,23 +3,18 @@ package week4.assignment;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdRandom;
 
-public final class Board {
+public class Board {
 	
 	private final int N;
 	private final int[][] tiles;
-	private final int[][] solution;
 	
 	// construct a board from an N-by-N array of blocks (where blocks[i][j] = block in row i, column j)
 	public Board(int[][] blocks) {
 		this.N = blocks.length;
 		this.tiles = new int[N][N];
-		this.solution = new int[N][N];
 		for (int i = 0; i < N; i++)
-			for (int j = 0; j < N; j++) {
+			for (int j = 0; j < N; j++)
 				this.tiles[i][j] = blocks[i][j];
-				this.solution[i][j] = 3 * i + j + 1;
-			}
-		this.solution[N-1][N-1] = 0;
 	}
 	
 	// board dimension N
@@ -32,7 +27,7 @@ public final class Board {
 		int priority = 0;
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < N; j++)
-				if (tiles[i][j] != solution[i][j] && tiles[i][j] != 0)
+				if (tiles[i][j] != N*i+j+1 && tiles[i][j] != 0)
 					priority++;
 		return priority;
 	}
@@ -42,9 +37,9 @@ public final class Board {
 		int priority = 0;
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < N; j++)
-				if (tiles[i][j] != solution[i][j] && tiles[i][j] != 0) {
-					int h = Math.abs((tiles[i][j] - 1) / 3 - i);
-					int v = Math.abs((tiles[i][j] - 1) % 3 - j);
+				if (tiles[i][j] != N*i+j+1 && tiles[i][j] != 0) {
+					int h = Math.abs((tiles[i][j] - 1) / N - i);
+					int v = Math.abs((tiles[i][j] - 1) % N - j);
 					priority += h + v;
 				}
 		return priority;
@@ -52,23 +47,27 @@ public final class Board {
 	
 	// is this board the goal board?
 	public boolean isGoal() {
-		return tiles.equals(solution);
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				if (tiles[i][j] != N*i+j+1 && tiles[i][j] != 0)
+					return false;
+		return true;
 	}
 	
 	// a board that is obtained by exchanging any pair of blocks
 	public Board twin() {
 		int i, j, k, l;
-		int twin[][] = new int[N][N];
+		int[][] twin = new int[N][N];
 		for (int x = 0; x < N; x++)
 			for (int y = 0; y < N; y++)
 				twin[x][y] = tiles[x][y];
 		do {
-			i = StdRandom.uniform(0, 3);
-			j = StdRandom.uniform(0, 3);
+			i = StdRandom.uniform(0, N);
+			j = StdRandom.uniform(0, N);
 		} while (tiles[i][j] == 0);
 		do {
-			k = StdRandom.uniform(0, 3);
-			l = StdRandom.uniform(0, 3);
+			k = StdRandom.uniform(0, N);
+			l = StdRandom.uniform(0, N);
 		} while (tiles[k][l] == 0 || tiles[k][l] == tiles[i][j]);
 		twin[i][j] = tiles[k][l];
 		twin[k][l] = tiles[i][j];
@@ -76,7 +75,8 @@ public final class Board {
 	}
 	
 	// does this board equal y?
-	public boolean equals(Object y) { 
+	public boolean equals(Object y) {
+		if (y == null) return false;
 		return toString().equals(y.toString());
 	}
 	
@@ -85,14 +85,14 @@ public final class Board {
 		Queue<Board> q = new Queue<>();
 		int i = 0, j = 0;
 		for (int k = 0; k < N*N; k++) {
-			i = k / 3;
-			j = k % 3;
+			i = k / N;
+			j = k % N;
 			if (tiles[i][j] == 0) break;
 		}
 		if (j >   0) q.enqueue(getNeighbor(i, j, i  , j-1)); // has tile on the left
-		if (i >   0) q.enqueue(getNeighbor(i, j, i-1, j  )); // has tile above
+		if (i >   0) q.enqueue(getNeighbor(i, j, i-1, j));   // has tile above
 		if (j < N-1) q.enqueue(getNeighbor(i, j, i  , j+1)); // has tile on the right
-		if (i < N-1) q.enqueue(getNeighbor(i, j, i+1, j  )); // has tile below
+		if (i < N-1) q.enqueue(getNeighbor(i, j, i+1, j));   // has tile below
 		return q;
 	}
 	
@@ -137,10 +137,13 @@ public final class Board {
 		System.out.println(board2.manhattan() == 10);
 		System.out.println(board2.toString());
 		System.out.println(board2.twin().toString());
-		System.out.println(board2.equals(board2) == true);
-		System.out.println(board2.equals(board) == false);
+//		System.out.println(board2.equals(board2) == true);
+//		System.out.println(board2.equals(board) == false);
 		for (Board neighbor : board2.neighbors())
 			System.out.println(neighbor.toString());
+		int[][] tiles3 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } }; 
+		Board board3 = new Board(tiles3);
+		System.out.println(board3.isGoal());
 	}
 
 }
