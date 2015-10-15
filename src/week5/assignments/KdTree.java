@@ -7,8 +7,8 @@ import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
 	
-	private final static boolean VERTICAL = true;
-	private final static boolean HORIZONTAL = false;
+	private static final boolean VERTICAL   = true;
+	private static final boolean HORIZONTAL = false;
 	private Node root;
 	
 	// construct an empty set of points
@@ -57,16 +57,16 @@ public class KdTree {
 		if (x == null) return new Node(p, rect, null, null);
 		int cmp = compare(x, p, orientation);
 		if      (cmp < 0) {
-			if      (orientation == VERTICAL  ) x.lb = insert(x.lb, p, new RectHV(x.rect.xmin(), x.rect.ymin(), x.p.x()      , x.rect.ymax()), !orientation);
-			else if (orientation == HORIZONTAL) x.lb = insert(x.lb, p, new RectHV(x.rect.xmin(), x.rect.ymin(), x.rect.xmax(), x.p.y()      ), !orientation);
+			if      (orientation == VERTICAL  ) x.lb   = insert(x.lb, p, new RectHV(x.rect.xmin(), x.rect.ymin(), x.p.x()      , x.rect.ymax()), !orientation);
+			else if (orientation == HORIZONTAL) x.lb   = insert(x.lb, p, new RectHV(x.rect.xmin(), x.rect.ymin(), x.rect.xmax(), x.p.y()      ), !orientation);
 		}
 		else if (cmp > 0) {
-			if      (orientation == VERTICAL  ) x.rt = insert(x.rt, p, new RectHV(x.p.x()      , x.rect.ymin(), x.rect.xmax(), x.rect.ymax()), !orientation);
-			else if (orientation == HORIZONTAL) x.rt = insert(x.rt, p, new RectHV(x.rect.xmin(), x.p.y()      , x.rect.xmax(), x.rect.ymax()), !orientation);
+			if      (orientation == VERTICAL  ) x.rt   = insert(x.rt, p, new RectHV(x.p.x()      , x.rect.ymin(), x.rect.xmax(), x.rect.ymax()), !orientation);
+			else if (orientation == HORIZONTAL) x.rt   = insert(x.rt, p, new RectHV(x.rect.xmin(), x.p.y()      , x.rect.xmax(), x.rect.ymax()), !orientation);
 		}
 		else {
-						  						x.p     = p;
-						  						x.rect  = rect;
+						  						x.p    = p;
+						  						x.rect = rect;
 		}
 		return x;
 	}
@@ -87,12 +87,13 @@ public class KdTree {
     
     private int compare(Node x, Point2D p, boolean orientation) {
 		if      (orientation == VERTICAL)
-			if (p.x() < x.p.x()) return -1;
-			if (p.x() > x.p.x()) return  1;
-		else if (orientation == HORIZONTAL)
-			if (p.y() < x.p.y()) return -1;
-			if (p.y() > x.p.y()) return  1;
-		return 0;
+			if      (p.x() < x.p.x()) return -1;
+			else if (p.x() > x.p.x()) return  1;
+			else                      return  0;
+		else // if (orientation == HORIZONTAL)
+			if      (p.y() < x.p.y()) return -1;
+			else if (p.y() > x.p.y()) return  1;
+			else                      return  0;
 	}
 	
 	// draw all points to standard draw 
