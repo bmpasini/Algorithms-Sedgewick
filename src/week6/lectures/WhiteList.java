@@ -1,10 +1,10 @@
-package week5.assignments;
+package week6.lectures;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.StdIn;
 
-public class BlackList {
+public class WhiteList {
 	
 	public static void main(String[] args) {
 		
@@ -16,7 +16,7 @@ public class BlackList {
 		
 		while (!StdIn.isEmpty()) {
 			String word = StdIn.readString();
-			if (!set.contains(word))
+			if (set.contains(word))
 					System.out.println(word);
 		}
 		

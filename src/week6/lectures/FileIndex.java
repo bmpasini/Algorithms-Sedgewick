@@ -1,4 +1,4 @@
-package week5.assignments;
+package week6.lectures;
 
 import java.io.File;
 
